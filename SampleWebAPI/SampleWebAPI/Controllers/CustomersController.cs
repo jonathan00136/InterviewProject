@@ -7,50 +7,50 @@ namespace SampleWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly masterContext _context;
 
-        public EmployeesController(masterContext context)
+        public CustomersController(masterContext context)
         {
             _context = context;
         }
 
-        [HttpGet(Name = nameof(GetAllEmployee))]
-        public async Task<ActionResult<IEnumerable<Employees>>> GetAllEmployee()
+        [HttpGet(Name = nameof(GetAllCustomer))]
+        public async Task<ActionResult<IEnumerable<Customers>>> GetAllCustomer()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Customers.ToListAsync();
         }
 
-        [HttpGet("{id}", Name = nameof(GetEmployeeByIdAsync))]
+        [HttpGet("{id}", Name = nameof(GetCustomerByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<Employees>> GetEmployeeByIdAsync(int id)
+        public async Task<ActionResult<Customers>> GetCustomerByIdAsync(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(id);
 
-            if (employee == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return customer;
         }
 
-        [HttpPut("{id}", Name = nameof(PutEmployee))]
+        [HttpPut("{id}", Name = nameof(PutCustomer))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> PutEmployee(int id, Employees employee)
+        public async Task<IActionResult> PutCustomer(string id, Customers customer)
         {
-            if (id != employee.EmployeeId)
+            if (id != customer.CustomerId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
+            _context.Entry(customer).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace SampleWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EmployeeExists(id))
+                if (!CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -74,35 +74,34 @@ namespace SampleWebAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<Employees>> PostEmployee(Employees employee)
+        public async Task<ActionResult<Customers>> PostCustomer(Customers customer)
         {
-            _context.Employees.Add(employee);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtRoute("GetEmployeeByIdAsync", new { id = employee.EmployeeId }, employee);
+            return CreatedAtRoute("GetCustomerByIdAsync", new { id = customer.CustomerId }, customer);
         }
 
-        // DELETE: api/Courses/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteCustomer(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
+            _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-        private bool EmployeeExists(int id)
+        private bool CustomerExists(string id)
         {
-            return _context.Employees.Any(e => e.EmployeeId == id);
+            return _context.Customers.Any(e => e.CustomerId == id);
         }
     }
 }

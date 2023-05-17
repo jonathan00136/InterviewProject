@@ -7,50 +7,50 @@ namespace SampleWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class TerritoriesController : ControllerBase
     {
         private readonly masterContext _context;
 
-        public EmployeesController(masterContext context)
+        public TerritoriesController(masterContext context)
         {
             _context = context;
         }
 
-        [HttpGet(Name = nameof(GetAllEmployee))]
-        public async Task<ActionResult<IEnumerable<Employees>>> GetAllEmployee()
+        [HttpGet(Name = nameof(GetAllTerritorie))]
+        public async Task<ActionResult<IEnumerable<Territories>>> GetAllTerritorie()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Territories.ToListAsync();
         }
 
-        [HttpGet("{id}", Name = nameof(GetEmployeeByIdAsync))]
+        [HttpGet("{id}", Name = nameof(GetTerritorieByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<Employees>> GetEmployeeByIdAsync(int id)
+        public async Task<ActionResult<Territories>> GetTerritorieByIdAsync(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var territorie = await _context.Territories.FindAsync(id);
 
-            if (employee == null)
+            if (territorie == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return territorie;
         }
 
-        [HttpPut("{id}", Name = nameof(PutEmployee))]
+        [HttpPut("{id}", Name = nameof(PutTerritorie))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> PutEmployee(int id, Employees employee)
+        public async Task<IActionResult> PutTerritorie(string id, Territories territorie)
         {
-            if (id != employee.EmployeeId)
+            if (id != territorie.TerritoryId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
+            _context.Entry(territorie).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace SampleWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EmployeeExists(id))
+                if (!TerritorieExists(id))
                 {
                     return NotFound();
                 }
@@ -74,35 +74,34 @@ namespace SampleWebAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<Employees>> PostEmployee(Employees employee)
+        public async Task<ActionResult<Territories>> PostTerritorie(Territories territorie)
         {
-            _context.Employees.Add(employee);
+            _context.Territories.Add(territorie);
             await _context.SaveChangesAsync();
 
-            return CreatedAtRoute("GetEmployeeByIdAsync", new { id = employee.EmployeeId }, employee);
+            return CreatedAtRoute("GetTerritoriesByIdAsync", new { id = territorie.TerritoryId }, territorie);
         }
 
-        // DELETE: api/Courses/5
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteTerritorie(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var territorie = await _context.Territories.FindAsync(id);
+            if (territorie == null)
             {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
+            _context.Territories.Remove(territorie);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-        private bool EmployeeExists(int id)
+        private bool TerritorieExists(string id)
         {
-            return _context.Employees.Any(e => e.EmployeeId == id);
+            return _context.Territories.Any(e => e.TerritoryId == id);
         }
     }
 }
